@@ -2,11 +2,57 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Your Extension Name</title>
-    <script type="module" src="main.js"></script>
+    <title>RedditSentimentInsight</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #1a1a1b;
+        color: #d7dadc;
+      }
+
+      .container {
+        width: 340px;
+        background-color: #1a1a1b;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 12px;
+      }
+
+      p {
+        font-size: 16px;
+        line-height: 1.4;
+        margin-bottom: 16px;
+      }
+
+      a {
+        color: #46d160;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
-    <h1>Your Extension Name</h1>
-    <p>Popup content goes here</p>
+    <div class="container">
+      <h1>Welcome to Reddit Sentiment Insight</h1>
+      <p>Analyze the general sentiment of a Reddit comment section with ease!</p>
+      <p>To use this extension, navigate to a Reddit comment section and click on the extension icon in the toolbar. Then click on the "Analyze Current Page" button to analyze the sentiment of the current Reddit comment section.</p>
+      <p>For more information, please visit our <a href="https://github.com/yourusername/redditsentimentinsight" target="_blank">GitHub repository</a>.</p>
+    </div>
   </body>
 </html>
