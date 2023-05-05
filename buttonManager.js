@@ -4,16 +4,22 @@ class ButtonManager
   constructor(analysisManager)
   {
     this.analysisManager = analysisManager;
-    this.summaryButton = null;
+    this.commentSummaryButton = null;
+    this.postSummaryButton = null;
     this.sentimentButton = null;
     this.buttonsAdded = false;
   }
 
   resetButtons()
   {
-    if (this.summaryButton)
+    if (this.postSummaryButton)
     {
-      this.summaryButton.remove();
+      this.postSummaryButton.remove();
+      this.buttonsAdded = false;
+    }
+    if (this.commentSummaryButton)
+    {
+      this.commentSummaryButton.remove();
       this.buttonsAdded = false;
     }
     if (this.sentimentButton)
@@ -25,15 +31,31 @@ class ButtonManager
 
   addButtons(storedApiKey)
   {
-    const buttonContainer = this.createButtonContainer();
+    this.buttonsAdded = true;
+    try 
+    {
+      
+      const buttonContainerPost = this.createButtonContainer();
+      const postEndDiv = document.querySelector('div[data-test-id="post-content"] div[data-adclicklocation="media"]').lastElementChild;
+      this.postSummaryButton = this.createPostSummaryButton(storedApiKey, postEndDiv);
+      buttonContainerPost.appendChild(this.postSummaryButton);
+      this.insertAfter(buttonContainerPost, postEndDiv);
+    }
+    catch (error)
+    {
+      console.log("Post Text non existing")
+    }
+
+    const buttonContainerComments = this.createButtonContainer();
     const commentsThreadFilterDiv = document.querySelector('#CommentSort--SortPicker').parentNode.parentNode.parentNode;
-
-    this.summaryButton = this.createSummaryButton(storedApiKey, commentsThreadFilterDiv);
+    
+    this.commentSummaryButton = this.createCommentSummaryButton(storedApiKey, commentsThreadFilterDiv);
     this.sentimentButton = this.createSentimentButton(storedApiKey, commentsThreadFilterDiv);
-
-    buttonContainer.appendChild(this.summaryButton);
-    buttonContainer.appendChild(this.sentimentButton);
-    this.insertAfter(buttonContainer, commentsThreadFilterDiv);
+    
+    buttonContainerComments.appendChild(this.commentSummaryButton);
+    buttonContainerComments.appendChild(this.sentimentButton);
+    
+    this.insertAfter(buttonContainerComments, commentsThreadFilterDiv);
   }
 
   createButtonContainer()
@@ -50,27 +72,38 @@ class ButtonManager
       `;
     return buttonContainer;
   }
-
-  createSummaryButton(storedApiKey, commentsThreadFilterDiv)
+  
+  createPostSummaryButton(storedApiKey, commentsThreadFilterDiv)
   {
-    const prompt = 'create a summary of it, start with Summary: ';
-    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Summary", "summary-analysis", prompt);
+    const prompt = 'create a summary and sentiment analysis of it, start with Post Summary: ';
+    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Post Summary", "post-summary-analysis", prompt,"post");
+  }
+
+  createCommentSummaryButton(storedApiKey, commentsThreadFilterDiv)
+  {
+    const prompt = 'create a summary of it, start with Comments Summary: ';
+    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Summary", "comments-summary-analysis", prompt, "comments");
   }
 
   createSentimentButton(storedApiKey, commentsThreadFilterDiv)
   {
-    const prompt = 'create a short,50 character max, sentiment analysis of it, be direct, dont give me a summary of the comments and start with Sentiment Analysis: ';
-    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Sentiment Analysis", "sentiment-analysis", prompt);
+    const prompt = 'create a short, sentiment analysis of these comments, be direct, dont give me a summary of the comments and start with Comments Sentiment Analysis: ';
+    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Sentiment Analysis", "sentiment-analysis", prompt, "comments");
   }
 
-  createAnalysisButton(storedApiKey, commentsThreadFilterDiv, text, className, prompt)
+  createAnalysisButton(storedApiKey, commentsThreadFilterDiv, text, className, prompt, analysisType)
   {
+    
     const button = this.createButton(text, className);
     button.onclick = async () =>
     {
       this.disableButton(button);
-      const comments = this.analysisManager.extractComments();
-      const analysis = await this.analysisManager.getAnalysis(storedApiKey, comments, prompt);
+      var content = "empty";
+      if (analysisType == "post")
+        content = this.analysisManager.extractPost();
+      else if (analysisType == "comments")
+        content = this.analysisManager.extractComments();
+      const analysis = await this.analysisManager.getAnalysis(storedApiKey, content, prompt);
       const analysisBox = this.createAnalysisBox(analysis);
       this.enableButton(button, text);
       button.style.display = "none";

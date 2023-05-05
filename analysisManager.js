@@ -2,9 +2,19 @@
 
 class AnalysisManager
 {
-  constructor(config)
+  constructor(config, apiKeyManager)
   {
     this.config = config;
+    this.apiKeyManager = apiKeyManager; // Add this line
+  }
+
+  extractPost()
+  {
+    const postContentDiv = document.querySelector('div[data-test-id="post-content"]');
+    const mediaDiv = postContentDiv.querySelector('div[data-adclicklocation="media"]');
+    const mediaChildElements = mediaDiv.querySelectorAll('*'); // select all child elements of mediaDiv
+    console.log("Post content: " + mediaChildElements[0].textContent.trim());
+    return mediaChildElements[0].textContent.trim();
   }
 
   extractComments()
@@ -69,13 +79,21 @@ class AnalysisManager
       });
     }
 
-    console.log(comments);
+    console.log("Comments content: " + comments);
     return comments;
   }
 
-  async getAnalysis(apiKey, comments, prompt)
+  async getAnalysis(apiKey, content, prompt)
   {
-    const commentSection = comments.join('\n\n');
+    try 
+    {
+      content = content.join('\n\n');
+    }
+    catch (error)
+    {
+      content = content;
+    }
+    
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -87,16 +105,16 @@ class AnalysisManager
         'messages': [
           {
             'role': 'system',
-            'content': `You are a language model. You will receive a text with all the content of a Reddit post's comment section and you will ${prompt}.`,
+            'content': `You are a language model. You will receive a text with all the content of a Reddit post's comment section or Post's content and you will, in english,  ${prompt}.`,
           },
           {
             'role': 'user',
-            'content': commentSection,
+            'content': content,
           },
         ],
         'n': 1,
         'stop': null,
-        'temperature': 0.9,
+        'temperature': 0.1,
       }),
     };
 
@@ -105,7 +123,7 @@ class AnalysisManager
     if (response.status === 401)
     {
       alert('Invalid API key!');
-      await this.sentimentAnalyzer.inputApiKey();
+      await this.apiKeyManager.inputApiKey(); // Update this line
       location.reload();
       return null;
     }

@@ -1,5 +1,4 @@
-// content.js
-(async () => 
+(async () =>
 {
   // Initialize SentimentAnalyzer
   const sentimentAnalyzer = new SentimentAnalyzer();

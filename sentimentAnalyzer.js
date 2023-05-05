@@ -1,6 +1,6 @@
 // Configuration
 const config = {
-  checkUrlInterval: 500,
+  checkUrlInterval: 1000,
   maxCommentLength: 200,
   maxTotalCharacters: 6000,
   apiUrl: 'https://api.openai.com/v1/chat/completions',
@@ -15,7 +15,7 @@ class SentimentAnalyzer
   constructor()
   {
     this.apiKeyManager = new ApiKeyManager();
-    this.analysisManager = new AnalysisManager(config);
+    this.analysisManager = new AnalysisManager(config, this.apiKeyManager); // Update this line
     this.buttonManager = new ButtonManager(this.analysisManager);
     this.lastUrl = window.location.href;
     this.watchUrlChange();
@@ -23,9 +23,12 @@ class SentimentAnalyzer
 
   watchUrlChange()
   {
+    const isRedditCommentUrl = /^https?:\/\/(www\.)?reddit\.com\/r\/.+?\/comments\/.+?\/.+?\/?$/i;
+
     const checkUrlChange = () =>
     {
-      if (this.lastUrl !== window.location.href)
+      
+      if (isRedditCommentUrl.test(window.location.href) && this.lastUrl !== window.location.href)
       {
         this.lastUrl = window.location.href;
         this.buttonManager.resetButtons();
@@ -33,14 +36,12 @@ class SentimentAnalyzer
       }
       setTimeout(checkUrlChange, config.checkUrlInterval);
     };
+
     checkUrlChange();
   }
 
   async main()
-  {
-    if (this.buttonManager.buttonsAdded) return;
-    this.buttonManager.buttonsAdded = true;
-
+  { 
     const storedApiKey = await this.apiKeyManager.getStoredApiKey();
     if (!storedApiKey) await this.apiKeyManager.inputApiKey();
 
