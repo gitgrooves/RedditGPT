@@ -141,9 +141,11 @@ class ButtonManager
 
   createAnalysisBox(text)
   {
+    const style = document.createElement('style');
+    style.innerHTML = ` @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } } @keyframes wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } 75% { transform: rotate(-3deg); } } `;    document.head.appendChild(style);
     const analysisBox = document.createElement("div");
     analysisBox.style = 'background-color: #f4f4f4; color: #333; padding: 16px; margin-top: 8px; margin-bottom: 8px; margin-left: auto; margin-right: auto; border-radius: 4px; text-align: left; margin-left: 20px; margin-right: 20px; display: flex; justify-content: flex-start; align-items: center; font-size: 14px; font-weight: bold;';
-
+    analysisBox.style.animation = 'pop-in 0.5s ease-out';
     const textWrapper = document.createElement("div");
     textWrapper.style = 'width: 100%; height: 100%; transition: all 1s;';
     analysisBox.appendChild(textWrapper);
@@ -164,15 +166,18 @@ class ButtonManager
       }
       else
       {
+        analysisBox.style.animation = 'wiggle 0.5s ease-in-out';
         // Center the text after the typing animation is complete
         setTimeout(() =>
         {
+          
           textWrapper.style.display = 'flex';
           textWrapper.style.justifyContent = 'center';
           textWrapper.style.alignItems = 'center';
           textWrapper.style.textAlign = 'center';
           textWrapper.style.width = '100%';
           textWrapper.style.height = '100%';
+          
         }, 100); // Delay before centering animation starts (in milliseconds)
 
       }
