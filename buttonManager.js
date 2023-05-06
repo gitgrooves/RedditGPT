@@ -173,7 +173,7 @@ class ButtonManager
           textWrapper.style.textAlign = 'center';
           textWrapper.style.width = '100%';
           textWrapper.style.height = '100%';
-        }, 1000); // Delay before centering animation starts (in milliseconds)
+        }, 100); // Delay before centering animation starts (in milliseconds)
 
       }
 
