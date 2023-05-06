@@ -30,10 +30,13 @@ class SentimentAnalyzer
       
       if (isRedditCommentUrl.test(window.location.href) && this.lastUrl !== window.location.href)
       {
-        this.lastUrl = window.location.href;
-        this.buttonManager.resetButtons();
-        this.main();
+        setTimeout(() =>
+        {
+          this.main();
+        }, 2000);
+        
       }
+      this.lastUrl = window.location.href;
       setTimeout(checkUrlChange, config.checkUrlInterval);
     };
 

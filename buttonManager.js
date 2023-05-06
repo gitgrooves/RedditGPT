@@ -31,15 +31,19 @@ class ButtonManager
 
   addButtons(storedApiKey)
   {
+    this.resetButtons();
     this.buttonsAdded = true;
-    try 
+    try
     {
-      
-      const buttonContainerPost = this.createButtonContainer();
-      const postEndDiv = document.querySelector('div[data-test-id="post-content"] div[data-adclicklocation="media"]').lastElementChild;
-      this.postSummaryButton = this.createPostSummaryButton(storedApiKey, postEndDiv);
-      buttonContainerPost.appendChild(this.postSummaryButton);
-      this.insertAfter(buttonContainerPost, postEndDiv);
+      const postContent = this.analysisManager.extractPost();
+      if (postContent.length > 1000)
+      {
+        const buttonContainerPost = this.createButtonContainer();
+        const postEndDiv = document.querySelector('div[data-test-id="post-content"] div[data-adclicklocation="media"]').lastElementChild;
+        this.postSummaryButton = this.createPostSummaryButton(storedApiKey, postEndDiv);
+        buttonContainerPost.appendChild(this.postSummaryButton);
+        this.insertAfter(buttonContainerPost, postEndDiv);
+      }
     }
     catch (error)
     {
@@ -138,10 +142,50 @@ class ButtonManager
   createAnalysisBox(text)
   {
     const analysisBox = document.createElement("div");
-    analysisBox.style = 'background-color: #f4f4f4; color: #333; padding: 16px; margin-top: 8px; margin-bottom: 8px; margin-left: auto; margin-right: auto; border-radius: 4px; text-align: center; margin-left: 20px; margin-right: 20px; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: bold;';
-    analysisBox.textContent = `${text}`;
+    analysisBox.style = 'background-color: #f4f4f4; color: #333; padding: 16px; margin-top: 8px; margin-bottom: 8px; margin-left: auto; margin-right: auto; border-radius: 4px; text-align: left; margin-left: 20px; margin-right: 20px; display: flex; justify-content: flex-start; align-items: center; font-size: 14px; font-weight: bold;';
+
+    const textWrapper = document.createElement("div");
+    textWrapper.style = 'width: 100%; height: 100%; transition: all 1s;';
+    analysisBox.appendChild(textWrapper);
+
+
+
+    const textSpan = document.createElement("span");
+    textWrapper.appendChild(textSpan);
+
+    let i = 0;
+    function typeWriter()
+    {
+      if (i < text.length)
+      {
+        textSpan.textContent += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 30); // Adjust the speed of the typing animation (in milliseconds)
+      }
+      else
+      {
+        // Center the text after the typing animation is complete
+        setTimeout(() =>
+        {
+          textWrapper.style.display = 'flex';
+          textWrapper.style.justifyContent = 'center';
+          textWrapper.style.alignItems = 'center';
+          textWrapper.style.textAlign = 'center';
+          textWrapper.style.width = '100%';
+          textWrapper.style.height = '100%';
+        }, 1000); // Delay before centering animation starts (in milliseconds)
+
+      }
+
+    }
+
+    typeWriter();
     return analysisBox;
   }
+
+
+
+
 
   insertAfter(newElement, referenceElement)
   {
