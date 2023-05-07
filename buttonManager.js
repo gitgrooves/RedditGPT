@@ -154,9 +154,15 @@ class ButtonManager
   {
     button.disabled = true;
 
-    // Remove current text content
-    button.textContent = '';
+    // Find the strong element within the button
+    const oldStrongElement = button.querySelector('strong');
 
+    // Remove the strong element from the button
+    if (oldStrongElement)
+    {
+      oldStrongElement.parentNode.removeChild(oldStrongElement);
+    }
+    
     // Create a new strong element with "Loading..." text
     const strongElement = document.createElement('strong');
     strongElement.textContent = 'Loading...';
@@ -178,7 +184,7 @@ class ButtonManager
     analysisBox.classList.add("analysisBox");
 
     const textWrapper = document.createElement("div");
-    textWrapper.style = 'width: 100%; height: auto; transition: all 1s; padding: 12px; overflow-wrap: break-word; word-wrap: break-word; hyphens: auto;';
+    textWrapper.style = 'width: 100%; height: auto; transition: all 1s; padding: 12px;';
     analysisBox.appendChild(textWrapper);
 
     const strongText = document.createElement("strong");
@@ -186,7 +192,7 @@ class ButtonManager
 
     // Add stars and glow animations
     const containerStars = document.createElement("div");
-    containerStars.id = "container-stars";
+    containerStars.id = "analysis-container-stars";
     const stars = document.createElement("div");
     stars.id = "stars";
     containerStars.appendChild(stars);
