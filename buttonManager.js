@@ -1,8 +1,9 @@
 
 class ButtonManager
 {
-  constructor(analysisManager)
+  constructor(analysisManager,CSSManager)
   {
+    this.CSSManager = CSSManager;
     this.analysisManager = analysisManager;
     this.commentSummaryButton = null;
     this.postSummaryButton = null;
@@ -65,15 +66,7 @@ class ButtonManager
   createButtonContainer()
   {
     const buttonContainer = document.createElement("div");
-    buttonContainer.style = `
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        margin-left: auto;
-        margin-right: auto;
-      `;
+    this.CSSManager.createButtonContainerStyle(buttonContainer);
     return buttonContainer;
   }
   
@@ -108,9 +101,7 @@ class ButtonManager
       else if (analysisType == "comments")
         content = this.analysisManager.extractComments();
       const analysis = await this.analysisManager.getAnalysis(storedApiKey, content, prompt);
-      const analysisBox = this.createAnalysisBox(analysis);
-      this.enableButton(button, text);
-      button.style.display = "none";
+      const analysisBox = this.createAnalysisBox(analysis, button);
       this.insertAfter(analysisBox, commentsThreadFilterDiv);
     };
     return button;
@@ -118,34 +109,8 @@ class ButtonManager
 
   createButton(text, className)
   {
-    const fontLink = document.createElement('link');
-    fontLink.href = `https://fonts.googleapis.com/css?family=Orbitron&display=swap`;
-    fontLink.rel = 'stylesheet';
-    document.head.appendChild(fontLink);
     const button = document.createElement("button");
-    button.className = className + " btn";
-    button.type = "button";
-
-    const strong = document.createElement("strong");
-    strong.textContent = text;
-    button.appendChild(strong);
-
-    const containerStars = document.createElement("div");
-    containerStars.id = "container-stars";
-    const stars = document.createElement("div");
-    stars.id = "stars";
-    containerStars.appendChild(stars);
-    button.appendChild(containerStars);
-
-    const glow = document.createElement("div");
-    glow.id = "glow";
-    const circle1 = document.createElement("div");
-    circle1.className = "circle";
-    const circle2 = document.createElement("div");
-    circle2.className = "circle";
-    glow.appendChild(circle1);
-    glow.appendChild(circle2);
-    button.appendChild(glow);
+    this.CSSManager.createButtonStyle(button,text,className);
     return button;
   }
 
@@ -153,22 +118,7 @@ class ButtonManager
   disableButton(button)
   {
     button.disabled = true;
-
-    // Find the strong element within the button
-    const oldStrongElement = button.querySelector('strong');
-
-    // Remove the strong element from the button
-    if (oldStrongElement)
-    {
-      oldStrongElement.parentNode.removeChild(oldStrongElement);
-    }
-    
-    // Create a new strong element with "Loading..." text
-    const strongElement = document.createElement('strong');
-    strongElement.textContent = 'Loading...';
-
-    // Append the strong element to the button
-    button.appendChild(strongElement);
+    this.CSSManager.disableButtonStyle(button);
   }
 
   enableButton(button, buttonText)
@@ -178,65 +128,12 @@ class ButtonManager
     button.textContent = buttonText;
   }
 
-  createAnalysisBox(text)
+  createAnalysisBox(text, button)
   {
     const analysisBox = document.createElement("div");
-    analysisBox.classList.add("analysisBox");
-
-    const textWrapper = document.createElement("div");
-    textWrapper.style = 'width: 100%; height: auto; transition: all 1s; padding: 12px;';
-    analysisBox.appendChild(textWrapper);
-
-    const strongText = document.createElement("strong");
-    textWrapper.appendChild(strongText);
-
-    // Add stars and glow animations
-    const containerStars = document.createElement("div");
-    containerStars.id = "analysis-container-stars";
-    const stars = document.createElement("div");
-    stars.id = "stars";
-    containerStars.appendChild(stars);
-    analysisBox.appendChild(containerStars);
-
-    const glow = document.createElement("div");
-    glow.id = "glow";
-    const circle1 = document.createElement("div");
-    circle1.className = "circle";
-    const circle2 = document.createElement("div");
-    circle2.className = "circle";
-    glow.appendChild(circle1);
-    glow.appendChild(circle2);
-    analysisBox.appendChild(glow);
-    // End of stars and glow animations
-
-    let i = 0;
-    function typeWriter()
-    {
-      if (i < text.length)
-      {
-        strongText.textContent += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, 30); // Adjust the speed of the typing animation (in milliseconds)
-      } else
-      {
-        analysisBox.style.animation = 'wiggle 0.5s ease-in-out';
-        // Center the text after the typing animation is complete
-        setTimeout(() =>
-        {
-          textWrapper.style.textAlign = 'center';
-        }, 100); // Delay before centering animation starts (in milliseconds)
-      }
-    }
-
-    typeWriter();
+    this.CSSManager.createAnalysisBoxStyle(text, analysisBox, button);  
     return analysisBox;
   }
-
-
-
-
-
-
 
   insertAfter(newElement, referenceElement)
   {

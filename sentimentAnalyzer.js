@@ -17,7 +17,7 @@ class SentimentAnalyzer
     this.CSSManager = new CSSManager();
     this.apiKeyManager = new ApiKeyManager();
     this.analysisManager = new AnalysisManager(config, this.apiKeyManager); // Update this line
-    this.buttonManager = new ButtonManager(this.analysisManager);
+    this.buttonManager = new ButtonManager(this.analysisManager, this.CSSManager);
     this.lastUrl = window.location.href;
     this.watchUrlChange();
   }
