@@ -29,6 +29,7 @@
       "./buttonManager.js",
       "./analysisManager.js",
       "./CSSManager.js",
+      "./buttonManagerInPage.js",
       "./sentimentAnalyzer.js",
       "./content.js"
     ]

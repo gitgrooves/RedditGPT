@@ -8,6 +8,66 @@ class AnalysisManager
     this.apiKeyManager = apiKeyManager; // Add this line
   }
 
+  async getPostDataFromAPI(threadID)
+  {
+    try
+    {
+      const response = await fetch(`https://api.reddit.com/comments/${threadID}.json`);
+
+      if (!response.ok)
+      {
+        throw new Error('Failed to fetch data from Reddit API');
+      }
+
+      const data = await response.json();
+      const post = data[0].data.children[0].data;
+
+      if (post.is_self)
+      {
+        return post.selftext;
+      } else
+      {
+        console.log('This post is not a text post.');
+      }
+    } catch (error)
+    {
+      console.error('Error:', error);
+    }
+  }
+
+  async isTextPost(threadID)
+  {
+    try
+    {
+      const response = await fetch(`https://api.reddit.com/comments/${threadID}.json`);
+
+      if (!response.ok)
+      {
+        return false;
+      }
+
+      const data = await response.json();
+      const post = data[0].data.children[0].data;
+
+      if (post.is_self)
+      {
+        if (post.selftext.length > 1000)
+          return true;
+        else
+          return false;
+
+        
+      } else
+      {
+        return false;
+      }
+    } catch (error)
+    {
+      return false;
+    }
+  }
+
+
   extractPost()
   {
     const postContentDiv = document.querySelector('div[data-test-id="post-content"]');

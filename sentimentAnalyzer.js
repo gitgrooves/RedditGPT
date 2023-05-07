@@ -18,13 +18,16 @@ class SentimentAnalyzer
     this.apiKeyManager = new ApiKeyManager();
     this.analysisManager = new AnalysisManager(config, this.apiKeyManager); // Update this line
     this.buttonManager = new ButtonManager(this.analysisManager, this.CSSManager);
-    this.lastUrl = window.location.href;
+    this.buttonManagerInPage = new ButtonManagerInPage(this.analysisManager, this.CSSManager);
+    this.lastUrl = "";
     this.watchUrlChange();
   }
 
   watchUrlChange()
   {
     const isRedditCommentUrl = /^https?:\/\/(www\.)?reddit\.com\/r\/.+?\/comments\/.+?\/.+?\/?$/i;
+    const isRedditUrl = /^https?:\/\/(www\.)?reddit\.com(\/r\/[A-Za-z0-9_]+)?\/?$/i;
+
 
     const checkUrlChange = () =>
     {
@@ -33,9 +36,15 @@ class SentimentAnalyzer
       {
         setTimeout(() =>
         {
-          this.main();
+          this.mainInThread();
         }, 2000);
-        
+      }
+      if (isRedditUrl.test(window.location.href))
+      {
+        setTimeout(() =>
+        {
+          this.mainInPage();
+        }, 2000);
       }
       this.lastUrl = window.location.href;
       setTimeout(checkUrlChange, config.checkUrlInterval);
@@ -44,12 +53,22 @@ class SentimentAnalyzer
     checkUrlChange();
   }
 
-  async main()
+  async mainInThread()
   { 
     const storedApiKey = await this.apiKeyManager.getStoredApiKey();
     if (!storedApiKey) await this.apiKeyManager.inputApiKey();
 
-    this.buttonManager.addButtons(await this.apiKeyManager.getStoredApiKey());
+    this.buttonManager.addButtonsInThread(await this.apiKeyManager.getStoredApiKey());
   }
+
+  async mainInPage()
+  {
+
+    const storedApiKey = await this.apiKeyManager.getStoredApiKey();
+    if (!storedApiKey) await this.apiKeyManager.inputApiKey();
+
+    this.buttonManager.addButtonsInPage(await this.apiKeyManager.getStoredApiKey());
+  }
+
 }
 window.SentimentAnalyzer = SentimentAnalyzer;

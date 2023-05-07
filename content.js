@@ -11,7 +11,7 @@
         !sentimentAnalyzer.buttonManager.buttonsAdded
       )
       {
-        sentimentAnalyzer.main();
+        sentimentAnalyzer.watchUrlChange();
       }
     }
   );

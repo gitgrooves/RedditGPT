@@ -1,23 +1,25 @@
-class CSSManager {
-  constructor() {
+class CSSManager
+{
+  constructor()
+  {
     this.addStyles();
   }
 
-  addStyles() {
-      // Add the necessary CSS styles
+  addStyles()
+  {
+    // Add the necessary CSS styles
     const fontLink = document.createElement('link');
     const style = document.createElement('style');
     fontLink.href = `https://fonts.googleapis.com/css?family=Orbitron&display=swap`;
     fontLink.rel = 'stylesheet';
     document.head.appendChild(fontLink);
-      style.innerHTML = `
+    style.innerHTML = `
     
     .btn {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 13rem;
-      height: 3rem;
+      margin: 10px;
       background-size: 300% 300%;
       backdrop-filter: blur(1rem);
       border-radius: 5rem;
@@ -27,6 +29,7 @@ class CSSManager {
       background-image: linear-gradient(#212121, #212121),  linear-gradient(137.48deg, #ffdb3b 10%,#FE53BB 45%, #8F51EA 67%, #0044ff 87%);
       background-origin: border-box;
       background-clip: content-box, border-box;
+      
     }
 
     .analysisBox {
@@ -67,13 +70,14 @@ class CSSManager {
       border-radius: 2rem;
     }
 
-    strong {
+    stronk {
       z-index: 2;
       font-family: 'Orbitron', sans-serif;
       font-size: 12px;
-      letter-spacing: 5px;
+      letter-spacing: 3px;
       color: #FFFFFF;
       text-shadow: 0 0 4px white;
+      padding:7px;
     }
 
 
@@ -206,10 +210,10 @@ class CSSManager {
       }
     }
       `;
-      document.head.appendChild(style);
+    document.head.appendChild(style);
   }
 
-  createButtonContainerStyle(buttonContainer,text,className)
+  createButtonContainerStyle(buttonContainer)
   {
     buttonContainer.style = `
         display: flex;
@@ -227,9 +231,9 @@ class CSSManager {
     button.className = className + " btn";
     button.type = "button";
 
-    const strong = document.createElement("strong");
-    strong.textContent = text;
-    button.appendChild(strong);
+    const stronk = document.createElement("stronk");
+    stronk.textContent = text;
+    button.appendChild(stronk);
 
     const containerStars = document.createElement("div");
     containerStars.id = "container-stars";
@@ -251,25 +255,25 @@ class CSSManager {
 
   disableButtonStyle(button)
   {
-    // Find the strong element within the button
-    const oldStrongElement = button.querySelector('strong');
+    // Find the stronk element within the button
+    const oldstronkElement = button.querySelector('stronk');
 
-    // Remove the strong element from the button
-    if (oldStrongElement)
+    // Remove the stronk element from the button
+    if (oldstronkElement)
     {
-      oldStrongElement.parentNode.removeChild(oldStrongElement);
+      oldstronkElement.parentNode.removeChild(oldstronkElement);
     }
 
-    // Create a new strong element with "Loading..." text
-    const strongElement = document.createElement('strong');
-    strongElement.textContent = 'Loading...';
+    // Create a new stronk element with "Loading..." text
+    const stronkElement = document.createElement('stronk');
+    stronkElement.textContent = 'Loading...';
 
 
-    // Append the strong element to the button
-    button.appendChild(strongElement);
+    // Append the stronk element to the button
+    button.appendChild(stronkElement);
   }
 
-  createAnalysisBoxStyle(text, analysisBox,button)
+  createAnalysisBoxStyle(text, analysisBox, button)
   {
     button.style.display = "none";
     analysisBox.classList.add("analysisBox");
@@ -278,8 +282,8 @@ class CSSManager {
     textWrapper.style = 'width: 100%; height: auto; transition: all 1s; padding: 12px;';
     analysisBox.appendChild(textWrapper);
 
-    const strongText = document.createElement("strong");
-    textWrapper.appendChild(strongText);
+    const stronkText = document.createElement("stronk");
+    textWrapper.appendChild(stronkText);
 
     // Add stars and glow animations
     const containerStars = document.createElement("div");
@@ -305,7 +309,7 @@ class CSSManager {
     {
       if (i < text.length)
       {
-        strongText.textContent += text.charAt(i);
+        stronkText.textContent += text.charAt(i);
         i++;
         setTimeout(typeWriter, 30); // Adjust the speed of the typing animation (in milliseconds)
       } else

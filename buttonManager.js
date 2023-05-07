@@ -9,6 +9,7 @@ class ButtonManager
     this.postSummaryButton = null;
     this.sentimentButton = null;
     this.buttonsAdded = false;
+    this.processedThreadIDs = new Set();
   }
 
   resetButtons()
@@ -30,7 +31,40 @@ class ButtonManager
     }
   }
 
-  addButtons(storedApiKey)
+
+  async addButtonsInPage(storedApiKey)
+  {
+    const mainThreadDivs = document.querySelectorAll('.scrollerItem[data-testid="post-container"]');
+
+    for (let i = 0; i < mainThreadDivs.length; i++)
+    {
+      const mainThreadDiv = mainThreadDivs[i];
+      const redditThreadID = mainThreadDiv.id.split('_')[1];
+
+      if (!this.processedThreadIDs.has(redditThreadID))
+      {
+        this.processedThreadIDs.add(redditThreadID);
+        const isTextPost = await this.analysisManager.isTextPost(redditThreadID);
+
+        if (isTextPost)
+        {
+          
+
+          const mainThreadDivChild = mainThreadDiv.lastChild;
+          const mainThreadTextContent = mainThreadDivChild.lastChild.lastChild.childNodes[2].lastChild.childNodes[5];
+
+          const buttonContainerPost = this.createButtonContainer();
+          this.postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
+
+          buttonContainerPost.appendChild(this.postSummaryButton);
+          this.insertAfter(buttonContainerPost, mainThreadTextContent);
+        }
+      }
+    }
+  }
+
+
+  addButtonsInThread(storedApiKey)
   {
     this.resetButtons();
     this.buttonsAdded = true;
@@ -63,11 +97,19 @@ class ButtonManager
     this.insertAfter(buttonContainerComments, commentsThreadFilterDiv);
   }
 
+  
+
   createButtonContainer()
   {
     const buttonContainer = document.createElement("div");
     this.CSSManager.createButtonContainerStyle(buttonContainer);
     return buttonContainer;
+  }
+
+  createInPagePostSummaryButton(storedApiKey, commentsThreadFilterDiv, threadID)
+  {
+    const prompt = 'create a summary and sentiment analysis of it, start with Post Summary: ';
+    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Post Summary", "post-summary-analysis", prompt, "postPage", threadID);
   }
   
   createPostSummaryButton(storedApiKey, commentsThreadFilterDiv)
@@ -88,7 +130,7 @@ class ButtonManager
     return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Sentiment Analysis", "sentiment-analysis", prompt, "comments");
   }
 
-  createAnalysisButton(storedApiKey, commentsThreadFilterDiv, text, className, prompt, analysisType)
+  createAnalysisButton(storedApiKey, commentsThreadFilterDiv, text, className, prompt, analysisType, threadID)
   {
     
     const button = this.createButton(text, className);
@@ -100,6 +142,8 @@ class ButtonManager
         content = this.analysisManager.extractPost();
       else if (analysisType == "comments")
         content = this.analysisManager.extractComments();
+      else if (analysisType == "postPage")
+        content = await this.analysisManager.getPostDataFromAPI(threadID);
       const analysis = await this.analysisManager.getAnalysis(storedApiKey, content, prompt);
       const analysisBox = this.createAnalysisBox(analysis, button);
       this.insertAfter(analysisBox, commentsThreadFilterDiv);
