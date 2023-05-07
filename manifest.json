@@ -28,6 +28,7 @@
       "./apiKeyManager.js",
       "./buttonManager.js",
       "./analysisManager.js",
+      "./CSSManager.js",
       "./sentimentAnalyzer.js",
       "./content.js"
     ]
