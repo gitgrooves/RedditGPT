@@ -55,17 +55,11 @@ class SentimentAnalyzer
 
   async mainInThread()
   { 
-    const storedApiKey = await this.apiKeyManager.getStoredApiKey();
-    if (!storedApiKey) await this.apiKeyManager.inputApiKey();
-
     this.buttonManager.addButtonsInThread(await this.apiKeyManager.getStoredApiKey());
   }
 
   async mainInPage()
   {
-
-    const storedApiKey = await this.apiKeyManager.getStoredApiKey();
-    if (!storedApiKey) await this.apiKeyManager.inputApiKey();
 
     this.buttonManager.addButtonsInPage(await this.apiKeyManager.getStoredApiKey());
   }

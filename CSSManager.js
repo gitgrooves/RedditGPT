@@ -84,7 +84,8 @@ class CSSManager
     #glow {
       position: absolute;
       display: flex;
-      width: 12rem;
+      width: 100%;
+      height: 100%;
     }
 
     .circle {

@@ -145,6 +145,8 @@ class AnalysisManager
 
   async getAnalysis(apiKey, content, prompt)
   {
+    var apikey2 = await this.apiKeyManager.getStoredApiKey();
+    
     try 
     {
       content = content.join('\n\n');
@@ -158,7 +160,7 @@ class AnalysisManager
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apikey2}`,
       },
       body: JSON.stringify({
         'model': 'gpt-3.5-turbo',
@@ -184,12 +186,11 @@ class AnalysisManager
     {
       alert('Invalid API key!');
       await this.apiKeyManager.inputApiKey(); // Update this line
-      location.reload();
-      return null;
+      return await this.getAnalysis(apikey2, content, prompt);
     }
-
     const data = await response.json();
     return data.choices[0].message.content;
+   
   }
 }
 window.AnalysisManager = AnalysisManager;

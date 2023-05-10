@@ -3,11 +3,6 @@ class ApiKeyManager
   async inputApiKey()
   {
     const apiKey = prompt("Please enter your API key:");
-    if (!apiKey)
-    {
-      alert("Please provide a valid API key.");
-      return;
-    }
     await this.saveApiKey(apiKey);
   }
 

@@ -48,16 +48,34 @@ class ButtonManager
 
         if (isTextPost)
         {
-          
+
+          const spans = mainThreadDiv.getElementsByTagName('span');
+          let shareSpan;
+
+          for (let i = 0; i < spans.length; i++)
+          {
+            if (spans[i].textContent.includes("share"))
+            {
+              shareSpan = spans[i];
+              break;
+            }
+          }
+
 
           const mainThreadDivChild = mainThreadDiv.lastChild;
-          const mainThreadTextContent = mainThreadDivChild.lastChild.lastChild.childNodes[2].lastChild.childNodes[5];
 
           const buttonContainerPost = this.createButtonContainer();
           this.postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
 
           buttonContainerPost.appendChild(this.postSummaryButton);
-          this.insertAfter(buttonContainerPost, mainThreadTextContent);
+          const parentElement = shareSpan.parentNode.parentNode.parentNode;
+          const lastChildElement = parentElement.lastElementChild;
+          const secondToLastChildElement = lastChildElement.previousElementSibling;
+
+          parentElement.insertBefore(buttonContainerPost, lastChildElement);
+
+
+          //this.insertAfter(buttonContainerPost, mainThreadTextContent);
         }
       }
     }
@@ -145,6 +163,7 @@ class ButtonManager
       else if (analysisType == "postPage")
         content = await this.analysisManager.getPostDataFromAPI(threadID);
       const analysis = await this.analysisManager.getAnalysis(storedApiKey, content, prompt);
+      console.log("wtf" + analysis);
       const analysisBox = this.createAnalysisBox(analysis, button);
       this.insertAfter(analysisBox, commentsThreadFilterDiv);
     };
