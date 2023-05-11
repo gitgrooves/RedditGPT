@@ -89,7 +89,7 @@ class AnalysisManager
       const comment = commentElements[i];
       const levelSpan = comment.parentNode.querySelector('span');
 
-      if (!levelSpan || levelSpan.innerText !== 'level 1')
+      if (!levelSpan || !levelSpan.innerText.includes('1'))
       {
         continue;
       }
@@ -102,11 +102,12 @@ class AnalysisManager
         const nextComment = commentElements[j];
         const nextLevelSpan = nextComment.parentNode.querySelector('span');
 
-        if (nextLevelSpan && nextLevelSpan.innerText === 'level 2')
+        if (nextLevelSpan && nextLevelSpan.innerText.includes('2'))
+
         {
           filteredElements.push(nextComment);
           level2Count++;
-        } else if (nextLevelSpan && nextLevelSpan.innerText === 'level 1')
+        } else if (nextLevelSpan && nextLevelSpan.innerText.includes('1'))
         {
           break;
         }
@@ -121,7 +122,7 @@ class AnalysisManager
 
         const levelSpan = comment.parentNode.querySelector('span');
         const levelText = levelSpan ? levelSpan.innerText : '';
-        const prefix = levelText === 'level 2' ? 'Reply to previous comment: ' : '';
+        const prefix = levelText.includes('2') ? 'Reply to previous comment: ' : '';
         const text = prefix + comment.innerText.substring(0, config.maxCommentLength);
         const commentLength = text.length;
 

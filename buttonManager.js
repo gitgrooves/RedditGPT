@@ -49,17 +49,10 @@ class ButtonManager
         if (isTextPost)
         {
 
-          const spans = mainThreadDiv.getElementsByTagName('span');
+          const spans = mainThreadDiv.getElementsByClassName('icon-share');
           let shareSpan;
 
-          for (let i = 0; i < spans.length; i++)
-          {
-            if (spans[i].textContent.includes("share"))
-            {
-              shareSpan = spans[i];
-              break;
-            }
-          }
+          shareSpan = spans[0];
 
 
           const mainThreadDivChild = mainThreadDiv.lastChild;
