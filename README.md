@@ -11,7 +11,9 @@
 </ul>
 <h2>Installation</h2>
   <h3>Chrome Web Store</h3>
-   <a href="https://chrome.google.com/webstore/detail/reddit-summarizer/jhbpjalfakhbaiojoaejjnjbminnacak" title="RGPT" class="active">Reddit Summarizer</a>
+  <ol>
+   <li><a href="https://chrome.google.com/webstore/detail/reddit-summarizer/jhbpjalfakhbaiojoaejjnjbminnacak" title="RGPT" class="active">Reddit Summarizer</a></li>
+   </ol>
   <h3>Local</h3>
  <ol>
    <li>Clone or download this repository.</li>
@@ -25,6 +27,7 @@
    <li>Navigate to Reddit in your Chrome browser.</li>
    <li>Open a post or a comment thread.</li>
    <li>Look for "Summarize" and "Analyze" buttons that have been added next to the comments or posts.</li>
+   <li>Insert your OpenAI API Key for the first time.</li>
    <li>Click on the "Summarize" button to generate a summarized version of the content.</li>
    <li>Click on the "Analyze" button to get the sentiment analysis of the summarized content.</li>
    <li>The extension will display the summarized content or analysis result in a visually appealing manner.</li>
@@ -43,7 +46,7 @@
 </ul>
 <h2>Dependencies</h2>
 <ul>
-   <li>OpenAI's GPT-3.5-turbo model</li>
+   <li>OpenAI's API</li>
    <li>Google Chrome browser</li>
 </ul>
 <h2>License</h2>
