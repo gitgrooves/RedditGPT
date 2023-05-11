@@ -10,8 +10,10 @@
    <li>Intuitive and aesthetically pleasing UI design</li>
 </ul>
 <h2>Installation</h2>
-<ol>
   <h3>Chrome Web Store</h3>
+   <a href="https://chrome.google.com/webstore/detail/reddit-summarizer/jhbpjalfakhbaiojoaejjnjbminnacak" title="RGPT" class="active">Reddit Summarizer</a>
+  <h3>Local</h3>
+ <ol>
    <li>Clone or download this repository.</li>
    <li>Open Google Chrome and navigate to <code>chrome://extensions</code>.</li>
    <li>Enable "Developer mode" in the top-right corner.</li>
