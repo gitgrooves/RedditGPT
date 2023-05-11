@@ -11,9 +11,9 @@
 </ul>
 <h2>Installation</h2>
   <h3>Chrome Web Store</h3>
-  <ol>
+  <ul>
    <li><a href="https://chrome.google.com/webstore/detail/reddit-summarizer/jhbpjalfakhbaiojoaejjnjbminnacak" title="RGPT" class="active">Reddit Summarizer</a></li>
-   </ol>
+   </ul>
   <h3>Local</h3>
  <ol>
    <li>Clone or download this repository.</li>
