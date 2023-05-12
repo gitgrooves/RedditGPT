@@ -124,7 +124,7 @@ class ButtonManager
 
   createInPagePostSummaryButton(storedApiKey, commentsThreadFilterDiv, threadID)
   {
-    const prompt = 'create a summary and sentiment analysis of it, start with Post Summary: ';
+    const prompt = 'create a summary and sentiment analysis of it, start with Post Summary : ';
     return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Post Summary", "post-summary-analysis", prompt, "postPage", threadID);
   }
 
@@ -132,7 +132,7 @@ class ButtonManager
   {
     var postTitle = this.analysisManager.extractTitleInPage(commentsThreadFilterDiv);
     var prompt = 'create a good summary of it and sentiment analysys, the title of the thread is: ' + postTitle + '. Start with Comments Summary: ';
-    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Comments Summary", "comments-summary-analysis", prompt, "commentsPage", threadID);
+    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Sum Comments", "comments-summary-analysis", prompt, "commentsPage", threadID);
   }
   
   createPostSummaryButton(storedApiKey, commentsThreadFilterDiv)

@@ -42,7 +42,7 @@ class CSSManager
       transition: 0.5s;
       animation: gradient_301 5s ease infinite;
       border: double 4px transparent;
-      background-image: linear-gradient(#212121, #212121),  linear-gradient(137.48deg, #ffdb3b 10%,#FE53BB 45%, #8F51EA 67%, #0044ff 87%);
+      background-image: linear-gradient(#000000, #000000),  linear-gradient(137.48deg, #ffdb3b 10%,#FE53BB 45%, #8F51EA 67%, #0044ff 87%);
       background-origin: border-box;
       background-clip: content-box, border-box;
       margin:20px;
@@ -76,7 +76,7 @@ class CSSManager
       font-size: 12px;
       letter-spacing: 3px;
       color: #FFFFFF;
-      text-shadow: 0 0 4px white;
+      text-shadow: 0 0 2px white;
       padding:7px;
     }
 
@@ -132,7 +132,7 @@ class CSSManager
   position: absolute;
   top: -10rem;
   left: -100rem;
-  width: 100%;
+  width: 150%;
   height: 100%;
   animation: animStarRotate 90s linear infinite;
   background-image: 
@@ -293,17 +293,6 @@ class CSSManager
     stars.id = "stars";
     containerStars.appendChild(stars);
     analysisBox.appendChild(containerStars);
-
-    const glow = document.createElement("div");
-    glow.id = "glow";
-    const circle1 = document.createElement("div");
-    circle1.className = "circle";
-    const circle2 = document.createElement("div");
-    circle2.className = "circle";
-    glow.appendChild(circle1);
-    glow.appendChild(circle2);
-    analysisBox.appendChild(glow);
-    // End of stars and glow animations
 
     let i = 0;
     function typeWriter()
