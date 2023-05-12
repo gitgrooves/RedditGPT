@@ -45,31 +45,36 @@ class ButtonManager
       {
         this.processedThreadIDs.add(redditThreadID);
         const isTextPost = await this.analysisManager.isTextPost(redditThreadID);
+        const spans = mainThreadDiv.getElementsByClassName('icon-share');
+        let shareSpan;
+
+        shareSpan = spans[0];
+
+
+        const mainThreadDivChild = mainThreadDiv.lastChild;
 
         if (isTextPost)
         {
-
-          const spans = mainThreadDiv.getElementsByClassName('icon-share');
-          let shareSpan;
-
-          shareSpan = spans[0];
-
-
-          const mainThreadDivChild = mainThreadDiv.lastChild;
-
           const buttonContainerPost = this.createButtonContainer();
           this.postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
 
           buttonContainerPost.appendChild(this.postSummaryButton);
           const parentElement = shareSpan.parentNode.parentNode.parentNode;
           const lastChildElement = parentElement.lastElementChild;
-          const secondToLastChildElement = lastChildElement.previousElementSibling;
 
           parentElement.insertBefore(buttonContainerPost, lastChildElement);
-
-
-          //this.insertAfter(buttonContainerPost, mainThreadTextContent);
         }
+
+        const buttonContainerPost = this.createButtonContainer();
+        this.postSummaryButton = this.createInPageCommentSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
+
+        buttonContainerPost.appendChild(this.postSummaryButton);
+        const parentElement = shareSpan.parentNode.parentNode.parentNode;
+        const lastChildElement = parentElement.lastElementChild;
+
+        parentElement.insertBefore(buttonContainerPost, lastChildElement);
+
+
       }
     }
   }
@@ -122,6 +127,13 @@ class ButtonManager
     const prompt = 'create a summary and sentiment analysis of it, start with Post Summary: ';
     return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Post Summary", "post-summary-analysis", prompt, "postPage", threadID);
   }
+
+  createInPageCommentSummaryButton(storedApiKey, commentsThreadFilterDiv, threadID)
+  {
+    var postTitle = this.analysisManager.extractTitleInPage(commentsThreadFilterDiv);
+    var prompt = 'create a summary of it, the title of the thread is: ' + postTitle + '. Start with Comments Summary: ';
+    return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Comments Summary", "comments-summary-analysis", prompt, "commentsPage", threadID);
+  }
   
   createPostSummaryButton(storedApiKey, commentsThreadFilterDiv)
   {
@@ -157,6 +169,8 @@ class ButtonManager
         content = this.analysisManager.extractComments();
       else if (analysisType == "postPage")
         content = await this.analysisManager.getPostDataFromAPI(threadID);
+      else if (analysisType == "commentsPage")
+        content = await this.analysisManager.getPostCommentsFromAPI(threadID);
       const analysis = await this.analysisManager.getAnalysis(storedApiKey, content, prompt);
       console.log("wtf" + analysis);
       const analysisBox = this.createAnalysisBox(analysis, button);

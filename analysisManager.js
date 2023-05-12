@@ -35,6 +35,49 @@ class AnalysisManager
     }
   }
 
+  async getPostCommentsFromAPI(threadID)
+{
+  let commentsString = '';
+
+  try
+  {
+    const response = await fetch(`https://api.reddit.com/comments/${threadID}.json`);
+
+    if (!response.ok)
+    {
+      throw new Error('Failed to fetch data from Reddit API');
+    }
+
+    const data = await response.json();
+    const comments = data[1].data.children;
+
+    for (let i = 0; i < comments.length; i++)
+    {
+      let comment = comments[i].data.body;
+
+      // Limit the comment to 400 characters
+      if (comment.length > config.maxCommentLength)
+      {
+        comment = comment.substring(0, config.maxCommentLength);
+      }
+
+      // If the addition of the new comment would make the string exceed 1000 characters, break the loop.
+      if ((commentsString.length + comment.length) > config.maxTotalCharacters) break;
+
+      commentsString += comment + ' ';
+    }
+
+  } catch (error)
+  {
+    console.error('Error:', error);
+  }
+
+  // Trim trailing space and return the string.
+  return commentsString.trim();
+}
+
+
+
   async isTextPost(threadID)
   {
     try
@@ -81,6 +124,12 @@ class AnalysisManager
   {
     console.log("Post Tittle: " + document.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText);
     return document.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText;
+  }
+
+  extractTitleInPage(div)
+  {
+
+    return div.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText;
   }
 
   extractComments()

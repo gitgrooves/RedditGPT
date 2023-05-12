@@ -312,7 +312,7 @@ class CSSManager
       {
         stronkText.textContent += text.charAt(i);
         i++;
-        setTimeout(typeWriter, 30); // Adjust the speed of the typing animation (in milliseconds)
+        setTimeout(typeWriter, 20); // Adjust the speed of the typing animation (in milliseconds)
       } else
       {
         analysisBox.style.animation = 'wiggle 0.5s ease-in-out';
