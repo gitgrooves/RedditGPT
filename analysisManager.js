@@ -87,6 +87,7 @@ class AnalysisManager
   {
     const comments = [];
     let totalCharacters = 0;
+    let totalCommentsUsed = 0;
 
     const commentElements = Array.from(document.querySelectorAll('div[data-testid="comment"]'));
 
@@ -109,8 +110,7 @@ class AnalysisManager
         const nextLevelSpan = nextComment.parentNode.querySelector('span');
 
         if (nextLevelSpan && nextLevelSpan.innerText.includes('2'))
-
-        {
+  {
           filteredElements.push(nextComment);
           level2Count++;
         } else if (nextLevelSpan && nextLevelSpan.innerText.includes('1'))
@@ -136,6 +136,7 @@ class AnalysisManager
         {
           comments.push(text);
           totalCharacters += commentLength;
+          totalCommentsUsed++; // Increment the totalCommentsUsed counter
         } else
         {
           const remainingCharacters = config.maxTotalCharacters - totalCharacters;
@@ -147,8 +148,10 @@ class AnalysisManager
     }
 
     console.log("Comments content: " + comments);
+    console.log("Total number of comments used: " + totalCommentsUsed); // Log the total number of comments used
     return comments;
   }
+
 
   async getAnalysis(apiKey, content, prompt)
   {
