@@ -36,82 +36,78 @@ class ButtonManager
   {
     const mainThreadDivs = document.querySelectorAll('.scrollerItem[data-testid="post-container"]');
 
-    for (let i = 0; i < mainThreadDivs.length; i++)
+    for (let mainThreadDiv of mainThreadDivs)
     {
-      const mainThreadDiv = mainThreadDivs[i];
       const redditThreadID = mainThreadDiv.id.split('_')[1];
 
       if (!this.processedThreadIDs.has(redditThreadID))
       {
         this.processedThreadIDs.add(redditThreadID);
         const isTextPost = await this.analysisManager.isTextPost(redditThreadID);
-        const spans = mainThreadDiv.getElementsByClassName('icon-share');
-        let shareSpan;
-
-        shareSpan = spans[0];
-
-
+        const shareSpan = mainThreadDiv.querySelector('.icon-share');
         const mainThreadDivChild = mainThreadDiv.lastChild;
 
+        const buttonContainerPost = this.createButtonContainer();
+        const buttonContainerPost2 = this.createButtonContainer();
+        let postSummaryButton;
+        let commentSummaryButton;
         if (isTextPost)
         {
-          const buttonContainerPost = this.createButtonContainer();
-          this.postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
-
-          buttonContainerPost.appendChild(this.postSummaryButton);
+          postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
+          buttonContainerPost.appendChild(postSummaryButton);
           const parentElement = shareSpan.parentNode.parentNode.parentNode;
           const lastChildElement = parentElement.lastElementChild;
-
           parentElement.insertBefore(buttonContainerPost, lastChildElement);
         }
+        commentSummaryButton = this.createInPageCommentSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
+
+        
+        buttonContainerPost2.appendChild(commentSummaryButton);
+
+        const parentElement = shareSpan.parentNode.parentNode.parentNode;
+        const lastChildElement = parentElement.lastElementChild;
+        
+        parentElement.insertBefore(buttonContainerPost2, lastChildElement);
+      }
+    }
+  }
+
+
+
+  async addButtonsInPage(storedApiKey)
+  {
+    const mainThreadDivs = Array.from(document.querySelectorAll('.scrollerItem[data-testid="post-container"]'));
+
+    await Promise.all(mainThreadDivs.map(async (mainThreadDiv) =>
+    {
+      const redditThreadID = mainThreadDiv.id.split('_')[1];
+
+      if (!this.processedThreadIDs.has(redditThreadID))
+      {
+        this.processedThreadIDs.add(redditThreadID);
+        const isTextPost = await this.analysisManager.isTextPost(redditThreadID);
+        const shareSpan = mainThreadDiv.querySelector('.icon-share');
+        const mainThreadDivChild = mainThreadDiv.lastChild;
 
         const buttonContainerPost = this.createButtonContainer();
-        this.postSummaryButton = this.createInPageCommentSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
-
-        buttonContainerPost.appendChild(this.postSummaryButton);
+        const buttonContainerPost2 = this.createButtonContainer();
         const parentElement = shareSpan.parentNode.parentNode.parentNode;
         const lastChildElement = parentElement.lastElementChild;
 
-        parentElement.insertBefore(buttonContainerPost, lastChildElement);
+        if (isTextPost)
+        {
+          const postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
+          buttonContainerPost.appendChild(postSummaryButton);
+          parentElement.insertBefore(buttonContainerPost, lastChildElement);
+        }
 
-
+        const commentSummaryButton = this.createInPageCommentSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
+        buttonContainerPost2.appendChild(commentSummaryButton);
+        parentElement.insertBefore(buttonContainerPost2, lastChildElement);
       }
-    }
+    }));
   }
 
-
-  addButtonsInThread(storedApiKey)
-  {
-    this.resetButtons();
-    this.buttonsAdded = true;
-    try
-    {
-      const postContent = this.analysisManager.extractPost();
-      if (postContent.length > 1000)
-      {
-        const buttonContainerPost = this.createButtonContainer();
-        const postEndDiv = document.querySelector('div[data-test-id="post-content"] div[data-adclicklocation="media"]').lastElementChild;
-        this.postSummaryButton = this.createPostSummaryButton(storedApiKey, postEndDiv);
-        buttonContainerPost.appendChild(this.postSummaryButton);
-        this.insertAfter(buttonContainerPost, postEndDiv);
-      }
-    }
-    catch (error)
-    {
-      console.log("Post Text non existing")
-    }
-
-    const buttonContainerComments = this.createButtonContainer();
-    const commentsThreadFilterDiv = document.querySelector('#CommentSort--SortPicker').parentNode.parentNode.parentNode;
-    
-    this.commentSummaryButton = this.createCommentSummaryButton(storedApiKey, commentsThreadFilterDiv);
-    this.sentimentButton = this.createSentimentButton(storedApiKey, commentsThreadFilterDiv);
-    
-    buttonContainerComments.appendChild(this.commentSummaryButton);
-    buttonContainerComments.appendChild(this.sentimentButton);
-    
-    this.insertAfter(buttonContainerComments, commentsThreadFilterDiv);
-  }
 
   
 
@@ -131,7 +127,7 @@ class ButtonManager
   createInPageCommentSummaryButton(storedApiKey, commentsThreadFilterDiv, threadID)
   {
     var postTitle = this.analysisManager.extractTitleInPage(commentsThreadFilterDiv);
-    var prompt = 'create a good summary of it and sentiment analysys, the title of the thread is: ' + postTitle + '. Start with Comments Summary: ';
+    var prompt = 'create a good summary of it and sentiment analysys, the title of the thread is: ' + postTitle;
     return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Sum Comments", "comments-summary-analysis", prompt, "commentsPage", threadID);
   }
   

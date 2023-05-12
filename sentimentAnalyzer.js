@@ -1,6 +1,6 @@
 // Configuration
 const config = {
-  checkUrlInterval: 1000,
+  checkUrlInterval: 500,
   maxCommentLength: 200,
   maxTotalCharacters: 6000,
   apiUrl: 'https://api.openai.com/v1/chat/completions',

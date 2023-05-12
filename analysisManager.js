@@ -226,7 +226,7 @@ class AnalysisManager
         'messages': [
           {
             'role': 'system',
-            'content': `You are a language model. You will receive a text with all the content of a Reddit post's comment section or Post's content and you will, in english,  ${prompt}.`,
+            'content': `You are a language model, you respond in english, always. You will receive a text with all the content of a Reddit post's comment section or Post's content and you will, in english,  ${prompt}.`,
           },
           {
             'role': 'user',
