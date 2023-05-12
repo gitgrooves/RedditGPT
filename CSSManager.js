@@ -316,11 +316,6 @@ class CSSManager
       } else
       {
         analysisBox.style.animation = 'wiggle 0.5s ease-in-out';
-        // Center the text after the typing animation is complete
-        setTimeout(() =>
-        {
-          textWrapper.style.textAlign = 'center';
-        }, 100); // Delay before centering animation starts (in milliseconds)
       }
     }
 

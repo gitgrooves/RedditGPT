@@ -131,7 +131,7 @@ class ButtonManager
   createInPageCommentSummaryButton(storedApiKey, commentsThreadFilterDiv, threadID)
   {
     var postTitle = this.analysisManager.extractTitleInPage(commentsThreadFilterDiv);
-    var prompt = 'create a summary of it, the title of the thread is: ' + postTitle + '. Start with Comments Summary: ';
+    var prompt = 'create a good summary of it and sentiment analysys, the title of the thread is: ' + postTitle + '. Start with Comments Summary: ';
     return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Comments Summary", "comments-summary-analysis", prompt, "commentsPage", threadID);
   }
   
