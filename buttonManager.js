@@ -131,13 +131,15 @@ class ButtonManager
 
   createCommentSummaryButton(storedApiKey, commentsThreadFilterDiv)
   {
-    const prompt = 'create a summary of it, start with Comments Summary: ';
+    var postTitle = this.analysisManager.extractTitleInThread();
+    var prompt = 'create a summary of it, the title of the thread is: ' + postTitle+'. Start with Comments Summary: ';
     return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Summary", "comments-summary-analysis", prompt, "comments");
   }
 
   createSentimentButton(storedApiKey, commentsThreadFilterDiv)
   {
-    const prompt = 'create a short, sentiment analysis of these comments, be direct, dont give me a summary of the comments and start with Comments Sentiment Analysis: ';
+    var postTitle = this.analysisManager.extractTitleInThread();
+    const prompt = 'create a short, sentiment analysis of these comments, be direct, dont give me a summary of the comments , the title of the thread is: ' + postTitle +' .Start with Comments Sentiment Analysis: ';
     return this.createAnalysisButton(storedApiKey, commentsThreadFilterDiv, "Sentiment Analysis", "sentiment-analysis", prompt, "comments");
   }
 

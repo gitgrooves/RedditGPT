@@ -77,6 +77,12 @@ class AnalysisManager
     return mediaChildElements[0].textContent.trim();
   }
 
+  extractTitleInThread()
+  {
+    console.log("Post Tittle: " + document.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText);
+    return document.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText;
+  }
+
   extractComments()
   {
     const comments = [];
