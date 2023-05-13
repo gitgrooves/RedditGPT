@@ -26,25 +26,38 @@ class SentimentAnalyzer
   watchUrlChange()
   {
     const isRedditCommentUrl = /^https?:\/\/(www\.)?reddit\.com\/r\/.+?\/comments\/.+?\/.+?\/?$/i;
-    const isRedditUrl = /^https?:\/\/(www\.)?reddit\.com(\/r\/[A-Za-z0-9_]+)?\/?$/i;
-
+    const isRedditUrl = /^https?:\/\/(www\.)?reddit\.com(\/(r\/[A-Za-z0-9_]+(\/new)?|hot|best|new))?\/?$/i;
 
     const checkUrlChange = () =>
     {
+      if (this.lastUrl !== window.location.href)
+      {
+        let iterator = this.buttonManager.processedThreadIDs.values();
+
+        for (let value of iterator)
+        {
+          console.log("nwnwn1 " + value);
+        }
+        this.buttonManager.processedThreadIDs.clear();
+        for (let value of iterator)
+        {
+          console.log("nwnwn2 " + value);
+        }
+      }
       
       if (isRedditCommentUrl.test(window.location.href) && this.lastUrl !== window.location.href)
       {
         setTimeout(() =>
         {
           this.mainInThread();
-        }, 2000);
+        }, 1);
       }
       if (isRedditUrl.test(window.location.href))
       {
         setTimeout(() =>
         {
           this.mainInPage();
-        }, 2000);
+        }, 1);
       }
       this.lastUrl = window.location.href;
       setTimeout(checkUrlChange, config.checkUrlInterval);

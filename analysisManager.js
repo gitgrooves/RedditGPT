@@ -128,8 +128,12 @@ class AnalysisManager
 
   extractTitleInPage(div)
   {
-
-    return div.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText;
+    try {
+      return div.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText;
+    } catch (error) {
+      return document.querySelector('div[data-adclicklocation="title"]').childNodes[0].childNodes[0].childNodes[0].innerText;
+    }
+    
   }
 
   extractComments()
