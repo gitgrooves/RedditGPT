@@ -1,47 +1,33 @@
 
-class ButtonManager
-{
-  constructor(analysisManager,CSSManager)
-  {
+class ButtonManager {
+  constructor(analysisManager, CSSManager) {
     this.CSSManager = CSSManager;
     this.analysisManager = analysisManager;
-    this.commentSummaryButton = null;
-    this.postSummaryButton = null;
-    this.sentimentButton = null;
+    this.buttons = {
+      postSummary: null,
+      commentSummary: null,
+      sentiment: null,
+    };
     this.buttonsAdded = false;
     this.processedThreadIDs = new Set();
   }
 
-  resetButtons()
-  {
-    if (this.postSummaryButton)
-    {
-      this.postSummaryButton.remove();
-      this.buttonsAdded = false;
-    }
-    if (this.commentSummaryButton)
-    {
-      this.commentSummaryButton.remove();
-      this.buttonsAdded = false;
-    }
-    if (this.sentimentButton)
-    {
-      this.sentimentButton.remove();
-      this.buttonsAdded = false;
-    }
+  resetButtons() {
+    Object.keys(this.buttons).forEach((key) => {
+      if (this.buttons[key]) {
+        this.buttons[key].remove();
+        this.buttonsAdded = false;
+      }
+    });
   }
 
-
-  async addButtonsInPage(storedApiKey)
-  {
+  async addButtonsInPage(storedApiKey) {
     const mainThreadDivs = document.querySelectorAll('.scrollerItem[data-testid="post-container"]');
 
-    for (let mainThreadDiv of mainThreadDivs)
-    {
+    for (let mainThreadDiv of mainThreadDivs) {
       const redditThreadID = mainThreadDiv.id.split('_')[1];
 
-      if (!this.processedThreadIDs.has(redditThreadID))
-      {
+      if (!this.processedThreadIDs.has(redditThreadID)) {
         this.processedThreadIDs.add(redditThreadID);
         const isTextPost = await this.analysisManager.isTextPost(redditThreadID);
         const shareSpan = mainThreadDiv.querySelector('.icon-share');
@@ -49,60 +35,50 @@ class ButtonManager
 
         const buttonContainerPost = this.createButtonContainer();
         const buttonContainerPost2 = this.createButtonContainer();
-        let postSummaryButton;
-        let commentSummaryButton;
-        if (isTextPost)
-        {
-          postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
+
+        if (isTextPost) {
+          const postSummaryButton = this.createInPagePostSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
           buttonContainerPost.appendChild(postSummaryButton);
-          const parentElement = shareSpan.parentNode.parentNode.parentNode;
-          const lastChildElement = parentElement.lastElementChild;
-          parentElement.insertBefore(buttonContainerPost, lastChildElement);
+          this.insertBefore(buttonContainerPost, shareSpan);
         }
-        commentSummaryButton = this.createInPageCommentSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
 
-        
+        const commentSummaryButton = this.createInPageCommentSummaryButton(storedApiKey, mainThreadDivChild.lastChild, redditThreadID);
         buttonContainerPost2.appendChild(commentSummaryButton);
-
-        const parentElement = shareSpan.parentNode.parentNode.parentNode;
-        const lastChildElement = parentElement.lastElementChild;
-        
-        parentElement.insertBefore(buttonContainerPost2, lastChildElement);
+        this.insertBefore(buttonContainerPost2, shareSpan);
       }
     }
   }
 
+  insertBefore(newElement, referenceElement) {
+    const parentElement = referenceElement.parentNode.parentNode.parentNode;
+    const lastChildElement = parentElement.lastElementChild;
+    parentElement.insertBefore(newElement, lastChildElement);
+  }
 
-
-  async addButtonsInThread(storedApiKey)
-  {
+  async addButtonsInThread(storedApiKey) {
     this.resetButtons();
     this.buttonsAdded = true;
-    try
-    {
+    try {
       const postContent = this.analysisManager.extractPost();
-      if (postContent.length > 1000)
-      {
+      if (postContent.length > 1000) {
         const buttonContainerPost = this.createButtonContainer();
         const postEndDiv = document.querySelector('div[data-test-id="post-content"] div[data-adclicklocation="media"]').lastElementChild;
-        this.postSummaryButton = this.createPostSummaryButton(storedApiKey, postEndDiv);
-        buttonContainerPost.appendChild(this.postSummaryButton);
+        this.buttons.postSummary = this.createPostSummaryButton(storedApiKey, postEndDiv);
+        buttonContainerPost.appendChild(this.buttons.postSummary);
         this.insertAfter(buttonContainerPost, postEndDiv);
       }
-    }
-    catch (error)
-    {
-      console.log("Post Text non existing")
+    } catch (error) {
+      console.error("Post Text non existing");
     }
 
     const buttonContainerComments = this.createButtonContainer();
     const commentsThreadFilterDiv = document.querySelector('#CommentSort--SortPicker').parentNode.parentNode.parentNode;
 
-    this.commentSummaryButton = this.createCommentSummaryButton(storedApiKey, commentsThreadFilterDiv);
-    this.sentimentButton = this.createSentimentButton(storedApiKey, commentsThreadFilterDiv);
+    this.buttons.commentSummary = this.createCommentSummaryButton(storedApiKey, commentsThreadFilterDiv);
+    this.buttons.sentiment = this.createSentimentButton(storedApiKey, commentsThreadFilterDiv);
 
-    buttonContainerComments.appendChild(this.commentSummaryButton);
-    buttonContainerComments.appendChild(this.sentimentButton);
+    buttonContainerComments.appendChild(this.buttons.commentSummary);
+    buttonContainerComments.appendChild(this.buttons.sentiment);
 
     this.insertAfter(buttonContainerComments, commentsThreadFilterDiv);
   }
